@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		452C800F2BAFF8BF0068DB97 /* CustomShadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452C800E2BAFF8BF0068DB97 /* CustomShadow.swift */; };
+		452C80142BB00B360068DB97 /* CustomNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452C80132BB00B360068DB97 /* CustomNavigationController.swift */; };
 		EC6098732BAACD5400E2C0B6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6098722BAACD5400E2C0B6 /* AppDelegate.swift */; };
 		EC6098752BAACD5400E2C0B6 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6098742BAACD5400E2C0B6 /* SceneDelegate.swift */; };
 		EC6098772BAACD5400E2C0B6 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6098762BAACD5400E2C0B6 /* MapViewController.swift */; };
@@ -56,6 +58,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		452C800E2BAFF8BF0068DB97 /* CustomShadow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomShadow.swift; sourceTree = "<group>"; };
+		452C80132BB00B360068DB97 /* CustomNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNavigationController.swift; sourceTree = "<group>"; };
 		EC60986F2BAACD5400E2C0B6 /* Weather_App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Weather_App.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC6098722BAACD5400E2C0B6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EC6098742BAACD5400E2C0B6 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -192,6 +196,8 @@
 			children = (
 				EC60987B2BAACD5500E2C0B6 /* Assets.xcassets */,
 				ECEE0EB42BABC8520079D947 /* Colors.xcassets */,
+				452C800E2BAFF8BF0068DB97 /* CustomShadow.swift */,
+				452C80132BB00B360068DB97 /* CustomNavigationController.swift */,
 			);
 			path = Ultilities;
 			sourceTree = "<group>";
@@ -441,7 +447,9 @@
 				ECE142552BAD2EDC009B8B7A /* NetworkError.swift in Sources */,
 				ECE142442BAD28AC009B8B7A /* Wind.swift in Sources */,
 				EC6098752BAACD5400E2C0B6 /* SceneDelegate.swift in Sources */,
+				452C800F2BAFF8BF0068DB97 /* CustomShadow.swift in Sources */,
 				ECE1423E2BAD2466009B8B7A /* Urls.swift in Sources */,
+				452C80142BB00B360068DB97 /* CustomNavigationController.swift in Sources */,
 				ECE1424A2BAD2983009B8B7A /* Clouds.swift in Sources */,
 				ECEE0ECA2BAC19700079D947 /* APService.swift in Sources */,
 				ECE1424E2BAD2A02009B8B7A /* Weather.swift in Sources */,
@@ -637,6 +645,7 @@
 				DEVELOPMENT_TEAM = KNQWN32P6C;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Weather_App/Info.plist;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Allow access to your current location";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -666,6 +675,7 @@
 				DEVELOPMENT_TEAM = KNQWN32P6C;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Weather_App/Info.plist;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Allow access to your current location";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
