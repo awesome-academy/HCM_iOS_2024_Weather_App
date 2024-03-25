@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Ser-Q8-0Uo">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Ser-Q8-0Uo">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22684"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
         <capability name="Map view configurations" minToolsVersion="14.0"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
@@ -120,10 +120,24 @@
                                 <rect key="frame" x="0.0" y="0.0" width="393" height="95"/>
                                 <color key="backgroundColor" name="blueGreenCustom"/>
                             </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HNz-EY-QuJ">
+                                <rect key="frame" x="345" y="158" width="40" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="MhZ-0k-ZjY"/>
+                                    <constraint firstAttribute="width" constant="40" id="UD2-xa-ayB"/>
+                                </constraints>
+                                <color key="tintColor" systemColor="systemGrayColor"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" image="location.fill" catalog="system" title=""/>
+                                <connections>
+                                    <action selector="getUserLocationButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="3cD-NH-0aA"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="HNz-EY-QuJ" secondAttribute="trailing" constant="8" id="5Ka-g2-tjq"/>
                             <constraint firstItem="7ZM-6S-tie" firstAttribute="top" secondItem="8id-Tp-h3V" secondAttribute="bottom" constant="8" id="M0v-N6-iCf"/>
                             <constraint firstItem="6iq-Qa-G3d" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="15" id="MD3-48-s00"/>
                             <constraint firstItem="7ZM-6S-tie" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="MHn-45-e5y"/>
@@ -135,6 +149,7 @@
                             <constraint firstAttribute="trailing" secondItem="8id-Tp-h3V" secondAttribute="trailing" id="usw-WO-6fD"/>
                             <constraint firstItem="8id-Tp-h3V" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="x0x-Jz-kI3"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="6iq-Qa-G3d" secondAttribute="trailing" constant="15" id="yZt-nD-bd2"/>
+                            <constraint firstItem="HNz-EY-QuJ" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="55" id="zsN-Pm-NLn"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="JC2-R2-Xfg"/>
@@ -212,6 +227,7 @@
         <image name="cloud.sun.fill" catalog="system" width="128" height="101"/>
         <image name="favoriteIcon" width="26" height="26"/>
         <image name="iconStar" width="35" height="35"/>
+        <image name="location.fill" catalog="system" width="128" height="119"/>
         <image name="map.fill" catalog="system" width="128" height="110"/>
         <namedColor name="AccentColor">
             <color red="0.0" green="0.46000000000000002" blue="0.89000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -224,6 +240,9 @@
         </namedColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemGrayColor">
+            <color red="0.5568627451" green="0.5568627451" blue="0.57647058819999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>
