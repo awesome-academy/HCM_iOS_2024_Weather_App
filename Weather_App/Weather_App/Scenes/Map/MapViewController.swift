@@ -19,8 +19,9 @@ final class MapViewController: UIViewController {
     @IBOutlet weak var statusImageView: UIImageView!
     
     private let searchController = UISearchController()
-    private var location = (latitude: 0.0, longitude: 0.0)
+    private var locationUpdate = (latitude: 0.0, longitude: 0.0)
     
+    private let weatherRepository: WeatherRepository = WeatherAPIRepository()
     private var locationManager = LocationManager.shared
     
     override func viewDidLoad() {
@@ -32,7 +33,7 @@ final class MapViewController: UIViewController {
     
     override internal func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        centerMapOnUserLocation()
+        getRegionMapOnUserLocation()
     }
 }
 
@@ -49,28 +50,58 @@ extension MapViewController {
     
     private func configureMap() {
         mapView.showsUserLocation = true
-        centerMapOnUserLocation()
+        getRegionMapOnUserLocation()
     }
     
-    private func centerMapOnUserLocation() {
-        if let userLocation = locationManager.getCurrentLocation() {
-            let region = MKCoordinateRegion(
-                center: userLocation.coordinate,
-                latitudinalMeters: Constants.latitudinalMeters,
-                longitudinalMeters: Constants.longitudinalMeters
-            )
-            mapView.setRegion(region, animated: true)
+    private func getRegionMapOnUserLocation() {
+        guard let userLocation = locationManager.getCurrentLocation() else {
+            locationManager.startUpdatingLocation()
+            return
         }
+        fetchCurrentWeather(
+            latitude: userLocation.coordinate.latitude,
+            longitude: userLocation.coordinate.longitude)
+        let region = MKCoordinateRegion(
+            center: userLocation.coordinate,
+            latitudinalMeters: Constants.latitudinalMeters,
+            longitudinalMeters: Constants.longitudinalMeters
+        )
+        mapView.setRegion(region, animated: true)
     }
     
     @IBAction private func getUserLocationButtonTapped(_ sender: Any) {
-        centerMapOnUserLocation()
+        getRegionMapOnUserLocation()
     }
 }
 
 extension MapViewController: LocationManagerDelegate {
     func didUpdateLocation(latitude: Double, longitude: Double) {
-        location.latitude = latitude
-        location.longitude = longitude
+        locationUpdate = (latitude: latitude, longitude: longitude)
+    }
+}
+
+extension MapViewController {
+    private func fetchCurrentWeather(latitude: Double, longitude: Double) {
+        weatherRepository.getWeatherCurrent(latMapKit: latitude, lonMapKit: longitude) { result in
+            switch result {
+            case .success(let weatherCurrent):
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
+                    self.updateUIWithData(weatherCurrent)
+                }
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    self.presentErrorAlert(title: "ERROR", message: "No weather data")
+                }
+            }
+        }
+    }
+    
+    private func updateUIWithData(_ weatherCurrent: WeatherCurrent) {
+        nameCityLabel.text = weatherCurrent.nameCity
+        temperatureLabel.text = weatherCurrent.temperatureInCelsius
+        if let icon = weatherCurrent.weatherStatus {
+            statusImageView.loadImage(withIcon: icon)
+        }
     }
 }
