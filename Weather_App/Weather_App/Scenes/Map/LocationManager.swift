@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreLocation
+import MapKit
 
 protocol LocationManagerDelegate: AnyObject {
     func didUpdateLocation(latitude: Double, longitude: Double)
@@ -46,5 +47,17 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         if status == .authorizedWhenInUse {
             startUpdatingLocation()
         }
+    }
+    
+    func setRegion(on mapView: MKMapView,
+                   center: CLLocationCoordinate2D,
+                   latitudinalMeters: CLLocationDistance,
+                   longitudinalMeters: CLLocationDistance) {
+        let region = MKCoordinateRegion(
+            center: center,
+            latitudinalMeters: latitudinalMeters,
+            longitudinalMeters: longitudinalMeters
+        )
+        mapView.setRegion(region, animated: true)
     }
 }
