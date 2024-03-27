@@ -12,4 +12,7 @@ struct Constants {
     static let cornerRadius: CGFloat = 15.0
     static let latitudinalMeters: CLLocationDistance = 3000
     static let longitudinalMeters: CLLocationDistance = 3000
+    
+    static let favoritedStatus = "iconStarYellow"
+    static let notFavotiteStatus = "iconStar"
 }

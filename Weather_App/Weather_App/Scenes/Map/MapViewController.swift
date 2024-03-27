@@ -23,6 +23,9 @@ final class MapViewController: UIViewController {
     
     private let weatherRepository: WeatherRepository = WeatherAPIRepository()
     private var locationManager = LocationManager.shared
+    private let weatherCurrentCoreDataManager = WeatherCurrentCoreDataManager.shared
+    private var currentWeatherData: WeatherCurrent?
+    private var isFavorite = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -61,12 +64,10 @@ extension MapViewController {
         fetchCurrentWeather(
             latitude: userLocation.coordinate.latitude,
             longitude: userLocation.coordinate.longitude)
-        let region = MKCoordinateRegion(
-            center: userLocation.coordinate,
-            latitudinalMeters: Constants.latitudinalMeters,
-            longitudinalMeters: Constants.longitudinalMeters
-        )
-        mapView.setRegion(region, animated: true)
+        locationManager.setRegion(on: mapView,
+                                  center: userLocation.coordinate,
+                                  latitudinalMeters: Constants.latitudinalMeters,
+                                  longitudinalMeters: Constants.longitudinalMeters)
     }
     
     @IBAction private func getUserLocationButtonTapped(_ sender: Any) {
@@ -88,6 +89,7 @@ extension MapViewController {
                 DispatchQueue.main.async { [weak self] in
                     guard let self = self else { return }
                     self.updateUIWithData(weatherCurrent)
+                    self.currentWeatherData = weatherCurrent
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -103,5 +105,35 @@ extension MapViewController {
         if let icon = weatherCurrent.weatherStatus {
             statusImageView.loadImage(withIcon: icon)
         }
+        updateFavoriteStatus(for: weatherCurrent.nameCity)
+    }
+}
+
+extension MapViewController {
+    @IBAction private func favoriteButtonTapped(_ sender: Any) {
+        guard let weatherData = currentWeatherData else { return }
+        if isFavorite, let weatherEntity = weatherCurrentCoreDataManager.fetchWeatherEntity(for: weatherData.nameCity) {
+            weatherCurrentCoreDataManager.deleteWeatherFromCoreData(weatherEntity: weatherEntity)
+            isFavorite = false
+            updateFavoriteButtonImage()
+        } else {
+            weatherCurrentCoreDataManager.saveWeatherToCoreData(
+                latitude: weatherData.coordinate.latitude,
+                longitude: weatherData.coordinate.longitude,
+                cityName: weatherData.nameCity)
+            isFavorite = true
+            updateFavoriteButtonImage()
+        }
+    }
+    
+    private func updateFavoriteButtonImage() {
+        let imageName = isFavorite ? Constants.favoritedStatus : Constants.notFavotiteStatus
+        let image = UIImage(named: imageName)
+        favoriteButton.setImage(image, for: .normal)
+    }
+    
+    private func updateFavoriteStatus(for cityName: String) {
+        isFavorite = weatherCurrentCoreDataManager.fetchWeatherEntity(for: cityName) != nil
+        updateFavoriteButtonImage()
     }
 }
