@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Ser-Q8-0Uo">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Ser-Q8-0Uo">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22684"/>
         <capability name="Map view configurations" minToolsVersion="14.0"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
@@ -23,7 +23,7 @@
                     </tabBar>
                     <connections>
                         <segue destination="vci-8x-O2M" kind="relationship" relationship="viewControllers" id="O2k-Oo-9Tl"/>
-                        <segue destination="hpO-49-VkL" kind="relationship" relationship="viewControllers" id="iJ6-8S-2eh"/>
+                        <segue destination="emA-4f-H6r" kind="relationship" relationship="viewControllers" id="iJ6-8S-2eh"/>
                         <segue destination="8hr-wF-Cc7" kind="relationship" relationship="viewControllers" id="Zd8-bT-xhU"/>
                     </connections>
                 </tabBarController>
@@ -199,21 +199,44 @@
             </objects>
             <point key="canvasLocation" x="3132" y="-777"/>
         </scene>
-        <!--Weather detail-->
+        <!--Weather Detail View Controller-->
         <scene sceneID="Qu6-Dn-EWt">
             <objects>
                 <viewController id="hpO-49-VkL" customClass="WeatherDetailViewController" customModule="Weather_App" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="u6G-ej-oEM">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="P1M-lL-nJW">
+                                <rect key="frame" x="0.0" y="0.0" width="393" height="103"/>
+                                <color key="backgroundColor" name="blueGreenCustom"/>
+                            </view>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="Pwi-fK-mZn">
+                                <rect key="frame" x="0.0" y="103" width="393" height="666"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </tableView>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="Ad9-45-pya"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="P1M-lL-nJW" secondAttribute="trailing" id="RQa-3t-pmX"/>
+                            <constraint firstItem="Pwi-fK-mZn" firstAttribute="leading" secondItem="Ad9-45-pya" secondAttribute="leading" id="V5L-Xz-aXx"/>
+                            <constraint firstItem="Ad9-45-pya" firstAttribute="trailing" secondItem="Pwi-fK-mZn" secondAttribute="trailing" id="av0-HO-E6p"/>
+                            <constraint firstItem="Pwi-fK-mZn" firstAttribute="top" secondItem="P1M-lL-nJW" secondAttribute="bottom" id="c5V-7z-bSa"/>
+                            <constraint firstItem="Pwi-fK-mZn" firstAttribute="top" secondItem="Ad9-45-pya" secondAttribute="top" id="c8e-Vx-Daf"/>
+                            <constraint firstItem="P1M-lL-nJW" firstAttribute="leading" secondItem="u6G-ej-oEM" secondAttribute="leading" id="g9q-fg-qSF"/>
+                            <constraint firstItem="P1M-lL-nJW" firstAttribute="top" secondItem="u6G-ej-oEM" secondAttribute="top" id="xFU-Vf-0Y7"/>
+                            <constraint firstItem="Ad9-45-pya" firstAttribute="bottom" secondItem="Pwi-fK-mZn" secondAttribute="bottom" id="zxK-U2-BNn"/>
+                        </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Weather detail" image="cloud.sun.fill" catalog="system" id="3am-HG-WUD"/>
+                    <navigationItem key="navigationItem" id="WtY-ly-ntH"/>
+                    <connections>
+                        <outlet property="tableView" destination="Pwi-fK-mZn" id="Awb-Hl-QKo"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iNK-fl-Ylh" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1221" y="-27"/>
+            <point key="canvasLocation" x="2147.3282442748091" y="-27.464788732394368"/>
         </scene>
         <!--Favorite-->
         <scene sceneID="2QZ-Uk-gte">
@@ -254,6 +277,25 @@
             </objects>
             <point key="canvasLocation" x="1220.6106870229007" y="-777.46478873239437"/>
         </scene>
+        <!--Weather detail-->
+        <scene sceneID="7AP-PX-taB">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="emA-4f-H6r" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Weather detail" image="cloud.sun.fill" catalog="system" id="3am-HG-WUD"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="cdl-Tf-Dof">
+                        <rect key="frame" x="0.0" y="59" width="393" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="hpO-49-VkL" kind="relationship" relationship="rootViewController" id="4Kq-1f-xJ4"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="XJh-wV-DsC" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1220.6106870229007" y="-27.464788732394368"/>
+        </scene>
     </scenes>
     <resources>
         <image name="cloud.sun.fill" catalog="system" width="128" height="101"/>
@@ -273,7 +315,7 @@
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemGrayColor">
-            <color red="0.5568627451" green="0.5568627451" blue="0.57647058819999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.55686274509803924" green="0.55686274509803924" blue="0.57647058823529407" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>
