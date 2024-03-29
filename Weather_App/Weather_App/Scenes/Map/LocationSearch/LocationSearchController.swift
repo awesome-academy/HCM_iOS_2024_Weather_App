@@ -7,6 +7,7 @@
 
 import UIKit
 import MapKit
+import Reusable
 
 protocol LocationSearchDelegate: AnyObject {
     func didSelectLocation(name: String, coordinate: CLLocationCoordinate2D)
@@ -24,11 +25,11 @@ final class LocationSearchController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configTableView()
+        configureTableView()
     }
     
-    private func configTableView() {
-        tableView.register(LocationCell.self, forCellReuseIdentifier: "LocationCell")
+    private func configureTableView() {
+        tableView.register(cellType: LocationCell.self)
     }
     
 }
@@ -60,7 +61,7 @@ extension LocationSearchController {
     }
     
     override internal func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "LocationCell", for: indexPath) as! LocationCell
+        let cell: LocationCell = tableView.dequeueReusableCell(for: indexPath)
         let mapItem = searchResults[indexPath.row].placemark
         let name = mapItem.name ?? "Unknown"
         cell.setContent(name: name)

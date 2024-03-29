@@ -6,8 +6,9 @@
 //
 
 import UIKit
+import Reusable
 
-final class LocationCell : UITableViewCell {
+final class LocationCell : UITableViewCell, Reusable {
     
     func setContent(name: String) {
         textLabel?.text = name
