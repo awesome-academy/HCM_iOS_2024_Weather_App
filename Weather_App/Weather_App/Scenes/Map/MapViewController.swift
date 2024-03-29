@@ -7,6 +7,7 @@
 
 import UIKit
 import MapKit
+import CoreData
 
 final class MapViewController: UIViewController {
     
@@ -18,10 +19,11 @@ final class MapViewController: UIViewController {
     @IBOutlet weak var statusView: UIView!
     @IBOutlet weak var statusImageView: UIImageView!
     
-    private let searchController = UISearchController()
+    private var searchController = UISearchController()
     private var locationUpdate = (latitude: 0.0, longitude: 0.0)
     
     private let weatherRepository: WeatherRepository = WeatherAPIRepository()
+    private var locationSearchController = LocationSearchController()
     private var locationManager = LocationManager.shared
     private let weatherCurrentCoreDataManager = WeatherCurrentCoreDataManager.shared
     private var currentWeatherData: WeatherCurrent?
@@ -30,6 +32,7 @@ final class MapViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpUI()
+        setUpSearchController()
         configureMap()
         locationManager.delegate = self
     }
@@ -40,17 +43,30 @@ final class MapViewController: UIViewController {
     }
 }
 
+// MARK: - Setup UI
+
 extension MapViewController {
     func setUpUI() {
         informationWeatherView.layer.cornerRadius = Constants.cornerRadius
         informationWeatherView.addShadow()
         statusView.layer.cornerRadius = Constants.cornerRadius
         statusView.addShadow()
+    }
+    
+    func setUpSearchController() {
+        searchController = UISearchController(searchResultsController: locationSearchController)
         navigationItem.searchController = searchController
         customizeNavigationController()
         customizeSearchController(searchController: searchController)
+        searchController.searchResultsUpdater = locationSearchController
+        locationSearchController.delegate = self
+        definesPresentationContext = true
     }
-    
+}
+
+// MARK: - Setup map and handle action map
+
+extension MapViewController: LocationSearchDelegate {
     private func configureMap() {
         mapView.showsUserLocation = true
         getRegionMapOnUserLocation()
@@ -73,6 +89,18 @@ extension MapViewController {
     @IBAction private func getUserLocationButtonTapped(_ sender: Any) {
         getRegionMapOnUserLocation()
     }
+    
+    func didSelectLocation(name: String, coordinate: CLLocationCoordinate2D) {
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = coordinate
+        annotation.title = name
+        mapView.addAnnotation(annotation)
+        fetchCurrentWeather(latitude: coordinate.latitude, longitude: coordinate.longitude)
+        locationManager.setRegion(on: mapView, center: coordinate,
+                                  latitudinalMeters: Constants.latitudinalMeters,
+                                  longitudinalMeters: Constants.longitudinalMeters)
+        searchController.dismiss(animated: true)
+    }
 }
 
 extension MapViewController: LocationManagerDelegate {
@@ -80,6 +108,8 @@ extension MapViewController: LocationManagerDelegate {
         locationUpdate = (latitude: latitude, longitude: longitude)
     }
 }
+
+// MARK: - Fetch API and update data to UI
 
 extension MapViewController {
     private func fetchCurrentWeather(latitude: Double, longitude: Double) {
@@ -108,6 +138,8 @@ extension MapViewController {
         updateFavoriteStatus(for: weatherCurrent.nameCity)
     }
 }
+
+// MARK: - Save/delete to CoreData and update status button favorite
 
 extension MapViewController {
     @IBAction private func favoriteButtonTapped(_ sender: Any) {
