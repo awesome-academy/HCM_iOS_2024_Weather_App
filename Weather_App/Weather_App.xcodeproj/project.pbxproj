@@ -53,6 +53,8 @@
 		ECE9C9572BB1197600454D94 /* WeatherFavoriteCoreData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = ECE9C9552BB1197600454D94 /* WeatherFavoriteCoreData.xcdatamodeld */; };
 		ECE9C9592BB11F0100454D94 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE9C9582BB11F0100454D94 /* CoreDataManager.swift */; };
 		ECE9C95D2BB14D7900454D94 /* CoreDataError.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE9C95C2BB14D7900454D94 /* CoreDataError.swift */; };
+		ECEABF3A2BBBACB000A92523 /* ConvertDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECEABF392BBBACB000A92523 /* ConvertDate.swift */; };
+		ECEABF3E2BBBDEE100A92523 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECEABF3D2BBBDEE100A92523 /* NetworkMonitor.swift */; };
 		ECEE0EB52BABC8520079D947 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ECEE0EB42BABC8520079D947 /* Colors.xcassets */; };
 		ECEE0ECA2BAC19700079D947 /* APService.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECEE0EC92BAC19700079D947 /* APService.swift */; };
 		ECEE0ECE2BAC28C20079D947 /* WeatherData.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECEE0ECD2BAC28C20079D947 /* WeatherData.swift */; };
@@ -130,6 +132,8 @@
 		ECE9C9562BB1197600454D94 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		ECE9C9582BB11F0100454D94 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		ECE9C95C2BB14D7900454D94 /* CoreDataError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataError.swift; sourceTree = "<group>"; };
+		ECEABF392BBBACB000A92523 /* ConvertDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvertDate.swift; sourceTree = "<group>"; };
+		ECEABF3D2BBBDEE100A92523 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		ECEE0EB42BABC8520079D947 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
 		ECEE0EC92BAC19700079D947 /* APService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APService.swift; sourceTree = "<group>"; };
 		ECEE0ECD2BAC28C20079D947 /* WeatherData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherData.swift; sourceTree = "<group>"; };
@@ -278,6 +282,7 @@
 				EC3F397E2BB2A3B600D5BF0C /* LoadImage.swift */,
 				EC3F39802BB2AFDC00D5BF0C /* WeatherCurrentExtension.swift */,
 				451190592BB977DA00F4E0A6 /* CustomFlowLayout.swift */,
+				ECEABF392BBBACB000A92523 /* ConvertDate.swift */,
 			);
 			path = Ultilities;
 			sourceTree = "<group>";
@@ -315,6 +320,7 @@
 				ECE142532BAD2EC9009B8B7A /* NetworkError */,
 				ECEE0EC82BAC195C0079D947 /* API Service */,
 				ECE1423A2BAD235B009B8B7A /* Urls */,
+				ECEABF3D2BBBDEE100A92523 /* NetworkMonitor.swift */,
 			);
 			path = Remote;
 			sourceTree = "<group>";
@@ -606,6 +612,7 @@
 				EC3F397A2BB2735700D5BF0C /* Constants.swift in Sources */,
 				ECE1423C2BAD2374009B8B7A /* ApiKey.swift in Sources */,
 				EC3F39782BB25CF900D5BF0C /* LocationManager.swift in Sources */,
+				ECEABF3A2BBBACB000A92523 /* ConvertDate.swift in Sources */,
 				EC6098A92BAAD80800E2C0B6 /* WeatherDetailViewController.swift in Sources */,
 				ECE142552BAD2EDC009B8B7A /* NetworkError.swift in Sources */,
 				ECE142442BAD28AC009B8B7A /* Wind.swift in Sources */,
@@ -627,6 +634,7 @@
 				ECE1424C2BAD298E009B8B7A /* TimeOfSun.swift in Sources */,
 				EC6098AB2BAAD81C00E2C0B6 /* FavoriteViewController.swift in Sources */,
 				ECE9C9592BB11F0100454D94 /* CoreDataManager.swift in Sources */,
+				ECEABF3E2BBBDEE100A92523 /* NetworkMonitor.swift in Sources */,
 				ECE142392BAD213E009B8B7A /* TemperatureForecast.swift in Sources */,
 				ECEE0ED22BAC28EE0079D947 /* Coordinate.swift in Sources */,
 				4511905A2BB977DA00F4E0A6 /* CustomFlowLayout.swift in Sources */,

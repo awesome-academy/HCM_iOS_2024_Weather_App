@@ -20,7 +20,6 @@ final class MapViewController: UIViewController {
     @IBOutlet weak var statusImageView: UIImageView!
     
     private var searchController = UISearchController()
-    private var locationUpdate = (latitude: 0.0, longitude: 0.0)
     
     private let weatherRepository: WeatherRepository = WeatherAPIRepository()
     private var locationSearchController = LocationSearchController()
@@ -28,13 +27,13 @@ final class MapViewController: UIViewController {
     private let weatherCurrentCoreDataManager = WeatherCurrentCoreDataManager.shared
     private var currentWeatherData: WeatherCurrent?
     private var isFavorite = false
+    private var nameCitySaved = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpUI()
         setUpSearchController()
-        configureMap()
-        locationManager.delegate = self
+        checkNetwork()
     }
     
     override internal func viewDidAppear(_ animated: Bool) {
@@ -80,6 +79,8 @@ extension MapViewController: LocationSearchDelegate {
         fetchCurrentWeather(
             latitude: userLocation.coordinate.latitude,
             longitude: userLocation.coordinate.longitude)
+        weatherCurrentCoreDataManager.deleteDuplicateUserLocations(for: nameCitySaved)
+        weatherCurrentCoreDataManager.updateStatusUserLocation(for: nameCitySaved, userLocation: true)
         locationManager.setRegion(on: mapView,
                                   center: userLocation.coordinate,
                                   latitudinalMeters: Constants.latitudinalMeters,
@@ -103,13 +104,7 @@ extension MapViewController: LocationSearchDelegate {
     }
 }
 
-extension MapViewController: LocationManagerDelegate {
-    func didUpdateLocation(latitude: Double, longitude: Double) {
-        locationUpdate = (latitude: latitude, longitude: longitude)
-    }
-}
-
-// MARK: - Fetch API and update data to UI
+// MARK: - Fetch API and Save data to Coredata
 
 extension MapViewController {
     private func fetchCurrentWeather(latitude: Double, longitude: Double) {
@@ -118,7 +113,9 @@ extension MapViewController {
             case .success(let weatherCurrent):
                 DispatchQueue.main.async { [weak self] in
                     guard let self = self else { return }
-                    self.updateUIWithData(weatherCurrent)
+                    self.updateUIWithAPIData(weatherCurrent)
+                    self.weatherCurrentCoreDataManager.saveWeatherToCoreData(weatherCurrent: weatherCurrent)
+                    self.nameCitySaved = weatherCurrent.nameCity
                     self.currentWeatherData = weatherCurrent
                 }
             case .failure(let error):
@@ -128,34 +125,15 @@ extension MapViewController {
             }
         }
     }
-    
-    private func updateUIWithData(_ weatherCurrent: WeatherCurrent) {
-        nameCityLabel.text = weatherCurrent.nameCity
-        temperatureLabel.text = weatherCurrent.temperatureInCelsius
-        if let icon = weatherCurrent.weatherStatus {
-            statusImageView.loadImage(withIcon: icon)
-        }
-        updateFavoriteStatus(for: weatherCurrent.nameCity)
-    }
 }
 
-// MARK: - Save/delete to CoreData and update status button favorite
+// MARK: - Update status favorite CoreData and update status button favorite
 
 extension MapViewController {
     @IBAction private func favoriteButtonTapped(_ sender: Any) {
-        guard let weatherData = currentWeatherData else { return }
-        if isFavorite, let weatherEntity = weatherCurrentCoreDataManager.fetchWeatherEntity(for: weatherData.nameCity) {
-            weatherCurrentCoreDataManager.deleteWeatherFromCoreData(weatherEntity: weatherEntity)
-            isFavorite = false
-            updateFavoriteButtonImage()
-        } else {
-            weatherCurrentCoreDataManager.saveWeatherToCoreData(
-                latitude: weatherData.coordinate.latitude,
-                longitude: weatherData.coordinate.longitude,
-                cityName: weatherData.nameCity)
-            isFavorite = true
-            updateFavoriteButtonImage()
-        }
+        isFavorite.toggle()
+        updateFavoriteButtonImage()
+        weatherCurrentCoreDataManager.updateSaveStatus(for: nameCitySaved, saveStatus: isFavorite)
     }
     
     private func updateFavoriteButtonImage() {
@@ -164,8 +142,47 @@ extension MapViewController {
         favoriteButton.setImage(image, for: .normal)
     }
     
-    private func updateFavoriteStatus(for cityName: String) {
-        isFavorite = weatherCurrentCoreDataManager.fetchWeatherEntity(for: cityName) != nil
+    private func updateFavoriteButtonStatus(for cityName: String) {
+        isFavorite = weatherCurrentCoreDataManager.fetchCityWeatherEntity(for: cityName)?.saveStatus ?? false
         updateFavoriteButtonImage()
+    }
+}
+
+// MARK: - Check connection
+
+extension MapViewController {
+    private func checkNetwork() {
+        if NetworkMonitor.shared.isNetworkConnected() {
+            configureMap()
+        } else {
+            self.presentErrorAlert(title: "ERROR", message: "Not Connected")
+            if let savedWeatherData = weatherCurrentCoreDataManager.fetchWeatherEntity() {
+                for weatherEntity in savedWeatherData where weatherEntity.userLocation {
+                    updateUIWithCoreData(weatherEntity)
+                    break
+                }
+            }
+        }
+    }
+}
+
+// MARK: - Update data to UI
+
+extension MapViewController {
+    private func updateUIWithAPIData(_ weatherCurrent: WeatherCurrent) {
+        nameCityLabel.text = weatherCurrent.nameCity
+        temperatureLabel.text = weatherCurrent.temperatureInCelsius
+        if let icon = weatherCurrent.weatherStatus {
+            statusImageView.loadImage(withIcon: icon)
+        }
+        updateFavoriteButtonStatus(for: weatherCurrent.nameCity)
+    }
+    
+    private func updateUIWithCoreData(_ weatherEntity: WeatherEntity) {
+        nameCityLabel.text = weatherEntity.nameCity
+        temperatureLabel.text = weatherEntity.temperature
+        if let icon = weatherEntity.statusIcon {
+            statusImageView.loadImage(withIcon: icon)
+        }
     }
 }
