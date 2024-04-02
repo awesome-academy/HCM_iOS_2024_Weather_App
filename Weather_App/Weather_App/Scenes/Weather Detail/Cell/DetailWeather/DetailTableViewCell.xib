@@ -5,7 +5,6 @@
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
-        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -123,7 +122,7 @@
                                 </constraints>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="MI7-FT-dvs" firstAttribute="width" secondItem="pNC-Dj-5GN" secondAttribute="width" id="0Jt-Oa-7Eu"/>
                             <constraint firstItem="pNC-Dj-5GN" firstAttribute="top" secondItem="is5-iR-dJq" secondAttribute="top" id="2ZP-lk-fdG"/>
@@ -163,8 +162,5 @@
         <image name="iconSunrise" width="72" height="72"/>
         <image name="iconSunset" width="71" height="71"/>
         <image name="iconWind" width="4000" height="4000"/>
-        <systemColor name="systemBackgroundColor">
-            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
     </resources>
 </document>
