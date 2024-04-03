@@ -13,14 +13,26 @@ final class ForecastTableViewCell: UITableViewCell, NibReusable {
     @IBOutlet weak var sectionView: UIView!
     @IBOutlet weak var collectionView: UICollectionView!
     
+    private let weatherForecastCoreDataManager = WeatherForecastCoreDataManager.shared
+    private let networkMonitor = NetworkMonitor.shared
+    private var weatherCoreDataRepository: WeatherCoreDataRepository!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         configureCollectionView()
+        weatherCoreDataRepository = networkMonitor.isNetworkConnected()
+        ? OnlineWeatherDataService()
+        : OfflineWeatherDataService()
     }
     
     override func layoutSubviews() {
         super.layoutSubviews()
         setupUI()
+        updateWeatherData()
+    }
+    
+    private func updateWeatherData() {
+        collectionView.reloadData()
     }
 }
 
@@ -37,7 +49,7 @@ extension ForecastTableViewCell {
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.register(supplementaryViewType: HeaderCollectionReusableView.self,
-                                   ofKind: UICollectionView.elementKindSectionHeader)
+                                ofKind: UICollectionView.elementKindSectionHeader)
         collectionView.register(cellType: ForecastCollectionViewCell.self)
     }
 }
@@ -49,6 +61,7 @@ extension ForecastTableViewCell: UICollectionViewDataSource, UICollectionViewDel
     
     internal func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let forecastCell: ForecastCollectionViewCell = collectionView.dequeueReusableCell(for: indexPath)
+        configureCellContent(cell: forecastCell, indexPath: indexPath)
         return forecastCell
     }
     
@@ -66,6 +79,24 @@ extension ForecastTableViewCell: UICollectionViewDataSource, UICollectionViewDel
             return headerView
         default:
             fatalError("Unexpected supplementary view kind: \(kind)")
+        }
+    }
+}
+
+extension ForecastTableViewCell {
+    private func configureCellContent(cell: ForecastCollectionViewCell, indexPath: IndexPath) {
+        guard let weatherForecastEntities = weatherCoreDataRepository.getWeatherForecastData() else {
+            return
+        }
+        for weatherForecastEntity in weatherForecastEntities {
+            guard let weatherDataList = weatherForecastEntity.weatherData?.allObjects as? [WeatherDataEntity] else {
+                continue
+            }
+            let sortedWeatherDataList = weatherDataList.sorted { $0.index < $1.index }
+            guard indexPath.row < sortedWeatherDataList.count else {
+                continue
+            }
+            cell.setContent(weatherDataEntity: sortedWeatherDataList[indexPath.row])
         }
     }
 }

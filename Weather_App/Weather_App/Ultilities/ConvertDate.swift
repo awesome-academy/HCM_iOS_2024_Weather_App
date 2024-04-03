@@ -7,20 +7,32 @@
 
 import Foundation
 
+enum DateFormat: String {
+    case ddMMyy = "dd-MM-yy"
+    case HHmm = "HH:mm"
+    case ddMM = "dd-MM"
+}
+
 extension Date {
     static func dateFromTimestamp(_ timestamp: TimeInterval) -> Date {
         return Date(timeIntervalSince1970: timestamp)
     }
     
-    func convertToDateString() -> String {
+    func toString(format: DateFormat) -> String {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
+        dateFormatter.dateFormat = format.rawValue
         return dateFormatter.string(from: self)
     }
     
+    func convertToDateString() -> String {
+        return self.toString(format: .ddMMyy)
+    }
+    
     func convertToTimeString() -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "HH:mm"
-        return dateFormatter.string(from: self)
+        return self.toString(format: .HHmm)
+    }
+    
+    func convertToDayString() -> String {
+        return self.toString(format: .ddMM)
     }
 }

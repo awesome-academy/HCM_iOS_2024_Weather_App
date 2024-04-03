@@ -30,25 +30,29 @@ extension WeatherCurrent {
         return "\(self.wind.speed) m/s"
     }
     
+    var descriptionString: String? {
+        return self.weathers.first?.description
+    }
+    
     var dateString: String {
         let timestamp = TimeInterval(self.dateTime)
         let date = Date.dateFromTimestamp(timestamp)
         let dateString = date.convertToDateString()
-        return "\(dateString)"
+        return dateString
     }
     
     var sunriseString: String {
         let timestamp = TimeInterval(self.timeOfSun.sunrise)
         let date = Date.dateFromTimestamp(timestamp)
         let timeString = date.convertToTimeString()
-        return "\(timeString)"
+        return timeString
     }
     
     var sunsetString: String {
         let timestamp = TimeInterval(self.timeOfSun.sunset)
         let date = Date.dateFromTimestamp(timestamp)
         let timeString = date.convertToTimeString()
-        return "\(timeString)"
+        return timeString
     }
 }
 

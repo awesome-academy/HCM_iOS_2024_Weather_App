@@ -12,22 +12,26 @@ final class WeatherDetailViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     
-    private var searchController = UISearchController()
+    private let weatherDataStore = WeatherDataStore.shared
+    private let weatherCurrentCoreDataManager = WeatherCurrentCoreDataManager.shared
+    private let networkMonitor = NetworkMonitor.shared
+    private var weatherCoreDataRepository: WeatherCoreDataRepository!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupUI()
         configureTableView()
+        weatherCoreDataRepository = networkMonitor.isNetworkConnected()
+                                                    ? OnlineWeatherDataService()
+                                                    : OfflineWeatherDataService()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tableView.reloadData()
     }
 }
 
 extension WeatherDetailViewController {
-    private func setupUI() {
-        navigationItem.searchController = searchController
-        customizeNavigationController()
-        customizeSearchController(searchController: searchController)
-    }
-    
     private func configureTableView() {
         tableView.dataSource = self
         tableView.separatorStyle = .none
@@ -56,13 +60,30 @@ extension WeatherDetailViewController: UITableViewDataSource {
         switch indexPath.section {
         case 0:
             let cell : MainWeatherTableViewCell = tableView.dequeueReusableCell(for: indexPath)
+            configureCellContent(cell: cell)
             return cell
         case 1:
             let cell : DetailTableViewCell = tableView.dequeueReusableCell(for: indexPath)
+            configureCellContent(cell: cell)
             return cell
         default:
             let cell : ForecastTableViewCell = tableView.dequeueReusableCell(for: indexPath)
             return cell
+        }
+    }
+}
+
+extension WeatherDetailViewController {
+    private func configureCellContent(cell: UITableViewCell) {
+        guard let weatherEntities = weatherCoreDataRepository.getWeatherData() else {
+            return
+        }
+        for weatherEntity in weatherEntities {
+            if let mainWeatherCell = cell as? MainWeatherTableViewCell {
+                mainWeatherCell.setContent(weatherEntity: weatherEntity)
+            } else if let detailCell = cell as? DetailTableViewCell {
+                detailCell.setContent(weatherEntity: weatherEntity)
+            }
         }
     }
 }
