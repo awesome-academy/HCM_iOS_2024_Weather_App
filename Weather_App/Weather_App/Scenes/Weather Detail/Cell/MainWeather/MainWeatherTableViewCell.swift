@@ -36,3 +36,17 @@ final class MainWeatherTableViewCell: UITableViewCell, NibReusable {
         self.selectionStyle = .none
     }
 }
+
+extension MainWeatherTableViewCell {
+    func setContent(weatherEntity: WeatherEntity) {
+        nameCityLabel.text = weatherEntity.nameCity
+        dateTimeLabel.text = weatherEntity.dateTime
+        statusLabel.text = weatherEntity.descriptionStatus
+        temperatureLabel.text = weatherEntity.temperature
+        if let icon = weatherEntity.statusIcon {
+            statusImage.loadImage(withIcon: icon)
+        } else {
+            statusImage.image = UIImage.wifiSlashImage()
+        }
+    }
+}

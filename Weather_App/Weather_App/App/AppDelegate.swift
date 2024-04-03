@@ -10,7 +10,8 @@ import UIKit
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
-    private let weatherCoreDataManager = WeatherCurrentCoreDataManager.shared
+    private let weatherCurrentCoreDataManager = WeatherCurrentCoreDataManager.shared
+    private let weatherForecastCoreDataManager = WeatherForecastCoreDataManager.shared
     private let networkMonitor = NetworkMonitor.shared
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -19,7 +20,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func applicationWillTerminate(_ application: UIApplication) {
-        weatherCoreDataManager.deleteWeatherNotUsed()
+        weatherCurrentCoreDataManager.deleteDataNotUsed()
+        weatherForecastCoreDataManager.deleteAllUserLocations(withUserLocation: false) { result in
+            switch result {
+            case .success(let deletedCount):
+                print("Successfully deleted \(deletedCount) user locations with user location false")
+            case .failure(let error):
+                print("Error deleting user locations: \(error)")
+            }
+        }
     }
     
     // MARK: UISceneSession Lifecycle

@@ -15,13 +15,12 @@ class WeatherCurrentCoreDataManager {
     func fetchWeatherEntity() -> [WeatherEntity]? {
         let context = coreDataManager.persistentContainer.viewContext
         let fetchRequest: NSFetchRequest<WeatherEntity> = WeatherEntity.fetchRequest()
-        
         do {
             let results = try context.fetch(fetchRequest)
             return results
         } catch {
             print("Error fetching all weather entities: \(error)")
-            return nil
+            return []
         }
     }
     
@@ -38,13 +37,28 @@ class WeatherCurrentCoreDataManager {
         }
     }
     
-    func saveWeatherToCoreData(weatherCurrent: WeatherCurrent) {
+    func fetchUserLocationWeatherEntities() -> [WeatherEntity]? {
+        let context = coreDataManager.persistentContainer.viewContext
+        let fetchRequest: NSFetchRequest<WeatherEntity> = WeatherEntity.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "userLocation == %@", NSNumber(value: true))
+        do {
+            let results = try context.fetch(fetchRequest)
+            return results
+        } catch {
+            print("Error fetching user location weather entities: \(error)")
+            return nil
+        }
+    }
+    
+    func saveWeatherToCoreData(weatherCurrent: WeatherCurrent, completion: @escaping (Error?) -> Void) {
         let context = coreDataManager.persistentContainer.viewContext
         let weatherEntity = WeatherEntity(context: context)
+        weatherEntity.saveStatus = false
+        weatherEntity.userLocation = false
         weatherEntity.latitude = weatherCurrent.coordinate.latitude
         weatherEntity.longitude = weatherCurrent.coordinate.longitude
         weatherEntity.nameCity = weatherCurrent.nameCity
-        weatherEntity.descriptionStatus = weatherCurrent.weathers.description
+        weatherEntity.descriptionStatus = weatherCurrent.descriptionString
         weatherEntity.dateTime = weatherCurrent.dateString
         weatherEntity.temperature = weatherCurrent.temperatureInCelsius
         weatherEntity.humidity = weatherCurrent.humidityString
@@ -52,12 +66,18 @@ class WeatherCurrentCoreDataManager {
         weatherEntity.statusIcon = weatherCurrent.weatherStatus
         weatherEntity.sunrise = weatherCurrent.sunriseString
         weatherEntity.sunset = weatherCurrent.sunsetString
-        do {
-            try coreDataManager.addData(data: weatherEntity)
-        } catch {
-            print("Failed to save weather data: \(error)")
+        weatherEntity.wind = weatherCurrent.windString
+        coreDataManager.addData(data: weatherEntity) { error in
+            if let error = error {
+                completion(error)
+                print("Failed to save weather data: \(error)")
+            } else {
+                completion(nil)
+                print("Weather data saved successfully")
+            }
         }
     }
+    
     
     func updateSaveStatus(for cityName: String, saveStatus: Bool) {
         guard let weatherEntity = fetchCityWeatherEntity(for: cityName) else {
@@ -66,8 +86,9 @@ class WeatherCurrentCoreDataManager {
         weatherEntity.saveStatus = saveStatus
         do {
             try coreDataManager.persistentContainer.viewContext.save()
+            print("Success updating save status for \(cityName)")
         } catch {
-            print("Error updating save status and location: \(error)")
+            print("Error updating save status for \(cityName): \(error)")
         }
     }
     
@@ -78,49 +99,56 @@ class WeatherCurrentCoreDataManager {
         weatherEntity.userLocation = userLocation
         do {
             try coreDataManager.persistentContainer.viewContext.save()
+            print("Success updating user location for \(cityName)")
         } catch {
             print("Error updating user location for \(cityName): \(error)")
         }
     }
     
     func deleteWeatherFromCoreData(weatherEntity: WeatherEntity) {
-        do {
-            try coreDataManager.deleteData(weatherEntity)
-        } catch {
-            print("Failed to delete weather data: \(error)")
+        coreDataManager.deleteData(weatherEntity) { error in
+            if let error = error {
+                print("Failed to delete weather data: \(error)")
+            } else {
+                print("Weather data deleted successfully")
+            }
         }
     }
     
-    func deleteWeatherNotUsed() {
-        let context = coreDataManager.persistentContainer.viewContext
-        let fetchRequest: NSFetchRequest<WeatherEntity> = WeatherEntity.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "userLocation == %@ AND saveStatus == %@", NSNumber(value: false), NSNumber(value: false))
-        do {
-            let results = try context.fetch(fetchRequest)
-            for entity in results {
-                context.delete(entity)
+    func deleteDataNotUsed() {
+        let predicate = NSPredicate(format: "saveStatus == false AND userLocation == false")
+        CoreDataManager.shared.deleteAllData(WeatherEntity.self, predicate: predicate) { result in
+            switch result {
+            case .success(let deletedCount):
+                print("Successfully deleted \(deletedCount) weather data not used")
+            case .failure(let error):
+                print("Error deleting weather data not used: \(error)")
             }
-            try context.save()
-            print("Successfully deleted weather entities not used")
-        } catch {
-            print("Error deleting weather entities with conditions: \(error)")
         }
     }
     
-    func deleteDuplicateUserLocations(for cityName: String) {
-        let context = coreDataManager.persistentContainer.viewContext
-        let fetchRequest: NSFetchRequest<WeatherEntity> = WeatherEntity.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "nameCity == %@ AND userLocation == true", cityName)
-        do {
-            let results = try context.fetch(fetchRequest)
-            for (index, entity) in results.enumerated() where index > 0 {
-                context.delete(entity)
+    func deleteDataWithUserLocation() {
+        let predicate = NSPredicate(format: "userLocation == %@", NSNumber(value: true))
+        coreDataManager.deleteAllData(WeatherEntity.self, predicate: predicate) { result in
+            switch result {
+            case .success(let deletedCount):
+                print("Successfully deleted \(deletedCount) entities with userLocation = true")
+            case .failure(let error):
+                print("Error deleting entities with userLocation = true: \(error)")
             }
-            try context.save()
-            print("Successfully deleted duplicate user locations for \(cityName)")
-            
+        }
+    }
+    
+    func deleteAllData() {
+        let context = coreDataManager.persistentContainer.viewContext
+        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "WeatherEntity")
+        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+        
+        do {
+            try context.execute(batchDeleteRequest)
+            print("Successfully deleted all weather entities")
         } catch {
-            print("Error deleting duplicate user locations for \(cityName): \(error)")
+            print("Error deleting all weather entities: \(error)")
         }
     }
 }

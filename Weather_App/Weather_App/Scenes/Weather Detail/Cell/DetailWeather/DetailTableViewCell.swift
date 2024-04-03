@@ -32,3 +32,13 @@ final class DetailTableViewCell: UITableViewCell, NibReusable {
         cellView.addShadow()
     }
 }
+
+extension DetailTableViewCell {
+    func setContent(weatherEntity: WeatherEntity) {
+        cloudsLabel.text = weatherEntity.clouds
+        windLabel.text = weatherEntity.wind
+        humidityLabel.text = weatherEntity.humidity
+        sunriseTimeLabel.text = weatherEntity.sunrise
+        sunsetTimeLabel.text = weatherEntity.sunset
+    }
+}

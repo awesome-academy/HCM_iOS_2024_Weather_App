@@ -37,3 +37,16 @@ final class ForecastCollectionViewCell: UICollectionViewCell, NibReusable {
         statusView.addShadow()
     }
 }
+
+extension ForecastCollectionViewCell {
+    func setContent(weatherDataEntity: WeatherDataEntity) {
+        dateTimeLabel.text = weatherDataEntity.date
+        statusLabel.text = weatherDataEntity.descriptionStatus
+        temperatureLabel.text = weatherDataEntity.temperature
+        if let icon = weatherDataEntity.statusIcon {
+            statusImage.loadImage(withIcon: icon)
+        } else {
+            statusImage.image = UIImage.wifiSlashImage()
+        }
+    }
+}

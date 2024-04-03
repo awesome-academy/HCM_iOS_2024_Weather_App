@@ -9,10 +9,12 @@ import Foundation
 
 struct WeatherForecast: Codable {
     var numberOfDays: Int
+    var city: City
     var WeatherDataList: [WeatherData]
     
     enum CodingKeys: String, CodingKey {
         case numberOfDays = "cnt"
+        case city
         case WeatherDataList = "list"
     }
 }

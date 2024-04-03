@@ -24,49 +24,62 @@ final class CoreDataManager {
         return container
     }()
     
-    func saveContext() throws {
+    func saveContext(completion: @escaping (Error?) -> Void) {
         let context = persistentContainer.viewContext
         if context.hasChanges {
             do {
                 try context.save()
+                completion(nil)
             } catch {
-                let nserror = error as NSError
-                throw CoreDataError.unresolvedError(nserror)
+                completion(error)
             }
         }
     }
     
-    func fetchData<T: NSManagedObject>() throws -> [T] {
+    func fetchData<T: NSManagedObject>(completion: @escaping (Result<[T], Error>) -> Void) {
         guard let fetchRequest = T.fetchRequest() as? NSFetchRequest<T> else {
-            throw CoreDataError.fetchFailed("Failed to create fetch request")
+            completion(.failure(CoreDataError.fetchFailed("Failed to create fetch request")))
+            return
         }
         let context = persistentContainer.viewContext
         do {
-            return try context.fetch(fetchRequest)
+            let fetchedData = try context.fetch(fetchRequest)
+            completion(.success(fetchedData))
         } catch {
-            throw CoreDataError.fetchFailed(error.localizedDescription)
+            completion(.failure(CoreDataError.fetchFailed(error.localizedDescription)))
         }
     }
     
-    func addData<T: NSManagedObject>(data: T) throws {
+    func addData<T: NSManagedObject>(data: T, completion: @escaping (Error?) -> Void) {
         let context = persistentContainer.viewContext
         context.insert(data)
-        do {
-            try saveContext()
-            print("Core Data: Save data success")
-        } catch {
-            throw CoreDataError.insertFailed(error.localizedDescription)
-        }
+        saveContext(completion: completion)
     }
     
-    func deleteData<T: NSManagedObject>(_ data: T) throws {
+    func deleteData<T: NSManagedObject>(_ data: T, completion: @escaping (Error?) -> Void) {
         let context = persistentContainer.viewContext
         context.delete(data)
+        saveContext(completion: completion)
+    }
+    
+    func deleteAllData<T: NSManagedObject>(_ type: T.Type, predicate: NSPredicate? = nil, completion: @escaping (Result<Int, Error>) -> Void) {
+        let context = persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: String(describing: type))
+        fetchRequest.predicate = predicate
         do {
-            try saveContext()
-            print("Core Data: Delete data success")
+            let objects = try context.fetch(fetchRequest)
+            for case let object as NSManagedObject in objects {
+                context.delete(object)
+            }
+            saveContext { error in
+                if let error = error {
+                    completion(.failure(CoreDataError.deleteFailed(error.localizedDescription)))
+                } else {
+                    completion(.success(objects.count))
+                }
+            }
         } catch {
-            throw CoreDataError.deleteFailed(error.localizedDescription)
+            completion(.failure(CoreDataError.deleteFailed(error.localizedDescription)))
         }
     }
 }
