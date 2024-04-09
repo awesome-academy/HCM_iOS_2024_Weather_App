@@ -8,7 +8,7 @@
 import Foundation
 import CoreData
 
-class WeatherCurrentCoreDataManager {
+final class WeatherCurrentCoreDataManager {
     static let shared = WeatherCurrentCoreDataManager()
     private let coreDataManager = CoreDataManager.shared
     
@@ -34,6 +34,19 @@ class WeatherCurrentCoreDataManager {
         } catch {
             print("Error fetching favorite cities: \(error)")
             return nil
+        }
+    }
+    
+    func fetchWeatherEntitiesWithSaveStatus(completion: @escaping ([WeatherEntity]?, Error?) -> Void) {
+        let context = coreDataManager.persistentContainer.viewContext
+        let fetchRequest: NSFetchRequest<WeatherEntity> = WeatherEntity.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "saveStatus == %@", NSNumber(value: true))
+        do {
+            let results = try context.fetch(fetchRequest)
+            completion(results, nil)
+        } catch {
+            print("Error fetching weather entities with save status true: \(error)")
+            completion(nil, error)
         }
     }
     
@@ -105,12 +118,14 @@ class WeatherCurrentCoreDataManager {
         }
     }
     
-    func deleteWeatherFromCoreData(weatherEntity: WeatherEntity) {
-        coreDataManager.deleteData(weatherEntity) { error in
+    func deleteWeatherFromCoreData(weatherEntity: WeatherEntity, completion: @escaping (Error?) -> Void) {
+        CoreDataManager.shared.deleteData(weatherEntity) { error in
             if let error = error {
                 print("Failed to delete weather data: \(error)")
+                completion(error)
             } else {
                 print("Weather data deleted successfully")
+                completion(nil)
             }
         }
     }
@@ -127,14 +142,16 @@ class WeatherCurrentCoreDataManager {
         }
     }
     
-    func deleteDataWithUserLocation() {
-        let predicate = NSPredicate(format: "userLocation == %@", NSNumber(value: true))
+    func deleteDataWithUserLocation(completion: @escaping (Result<Int, Error>) -> Void) {
+        let predicate = NSPredicate(format: "userLocation == %@ && saveStatus == %@", NSNumber(value: true), NSNumber(value: false))
         coreDataManager.deleteAllData(WeatherEntity.self, predicate: predicate) { result in
             switch result {
             case .success(let deletedCount):
-                print("Successfully deleted \(deletedCount) entities with userLocation = true")
+                print("Successfully deleted \(deletedCount) entities with userLocation")
+                completion(.success(deletedCount))
             case .failure(let error):
-                print("Error deleting entities with userLocation = true: \(error)")
+                print("Error deleting entities with userLocation: \(error)")
+                completion(.failure(error))
             }
         }
     }

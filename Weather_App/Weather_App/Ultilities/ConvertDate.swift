@@ -8,7 +8,7 @@
 import Foundation
 
 enum DateFormat: String {
-    case ddMMyy = "dd-MM-yy"
+    case ddMMyy = "dd-MM-yyyy"
     case HHmm = "HH:mm"
     case ddMM = "dd-MM"
 }
