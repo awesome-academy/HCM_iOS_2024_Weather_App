@@ -26,6 +26,7 @@ final class MapViewController: UIViewController {
     private var locationManager = LocationManager.shared
     private let weatherCurrentCoreDataManager = WeatherCurrentCoreDataManager.shared
     private let weatherForecastCoreDataManager = WeatherForecastCoreDataManager.shared
+    private let coordinateStored = CoordinateStored.shared
     private var isFavorite = false
     private var isFirstLaunch = true
     private var nameCitySaved = ""
@@ -45,6 +46,9 @@ final class MapViewController: UIViewController {
         if isFirstLaunch {
             checkNetwork()
             isFirstLaunch = false
+        } else {
+            let coordinates = CoordinateStored.shared.getCoordinates()
+            loadRegionAndData(coordinates.latitude, coordinates.longitude)
         }
     }
 }
@@ -90,7 +94,14 @@ extension MapViewController: LocationSearchDelegate {
         fetchCurrentWeather(latitude: userLocation.coordinate.latitude,
                             longitude: userLocation.coordinate.longitude) { [weak self] weatherCurrent in
             guard let self = self else { return }
-            weatherCurrentCoreDataManager.deleteDataWithUserLocation()
+            weatherCurrentCoreDataManager.deleteDataWithUserLocation { result in
+                switch result {
+                case .success(let deletedCount):
+                    print("Successfully deleted \(deletedCount) entities with userLocation")
+                case .failure(let error):
+                    print("Error deleting entities with userLocation: \(error)")
+                }
+            }
             weatherCurrentCoreDataManager.updateStatusUserLocation(for: weatherCurrent.nameCity, userLocation: true)
         }
         fetchForecastWeather(latitude: userLocation.coordinate.latitude,
@@ -118,19 +129,31 @@ extension MapViewController: LocationSearchDelegate {
         getRegionMapOnUserLocation()
     }
     
+    @IBAction func refreshButtonTapped(_ sender: Any) {
+        let coordinates = CoordinateStored.shared.getCoordinates()
+        loadRegionAndData(coordinates.latitude, coordinates.longitude)
+    }
+    
     func didSelectLocation(name: String, coordinate: CLLocationCoordinate2D) {
         let annotation = MKPointAnnotation()
         annotation.coordinate = coordinate
         annotation.title = name
         mapView.addAnnotation(annotation)
-        locationManager.setRegion(on: mapView, center: coordinate,
+        loadRegionAndData(coordinate.latitude, coordinate.longitude)
+        searchController.dismiss(animated: true)
+    }
+    
+    private func loadRegionAndData(_ latitude: Double?, _ longitude: Double?) {
+        guard let latitude = latitude, let longitude = longitude else {
+            print("Latitude or longitude of stored is nil")
+            return
+        }
+        let centerCoordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        locationManager.setRegion(on: mapView, center: centerCoordinate,
                                   latitudinalMeters: Constants.latitudinalMeters,
                                   longitudinalMeters: Constants.longitudinalMeters)
-        fetchCurrentWeather(latitude: coordinate.latitude,
-                            longitude: coordinate.longitude) {_ in }
-        fetchForecastWeather(latitude: coordinate.latitude,
-                             longitude: coordinate.longitude) {_ in}
-        searchController.dismiss(animated: true)
+        fetchCurrentWeather(latitude: latitude, longitude: longitude) {_ in }
+        fetchForecastWeather(latitude: latitude, longitude: longitude) {_ in}
     }
 }
 
@@ -151,6 +174,7 @@ extension MapViewController {
                             print("Weather data saved successfully")
                         }
                     }
+                    coordinateStored.setCoordinates(latitude: weatherCurrent.coordinate.latitude, longitude: weatherCurrent.coordinate.longitude)
                     if let savedWeatherData = self.weatherCurrentCoreDataManager.fetchWeatherEntity() {
                         for weatherEntity in savedWeatherData {
                             self.updateUIWithData(weatherEntity)

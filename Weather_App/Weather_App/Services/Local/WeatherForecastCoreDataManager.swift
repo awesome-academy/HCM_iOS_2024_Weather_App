@@ -8,7 +8,7 @@
 import Foundation
 import CoreData
 
-class WeatherForecastCoreDataManager {
+final class WeatherForecastCoreDataManager {
     static let shared = WeatherForecastCoreDataManager()
     private let coreDataManager = CoreDataManager.shared
     

@@ -12,7 +12,6 @@ final class WeatherDetailViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     
-    private let weatherDataStore = WeatherDataStore.shared
     private let weatherCurrentCoreDataManager = WeatherCurrentCoreDataManager.shared
     private let networkMonitor = NetworkMonitor.shared
     private var weatherCoreDataRepository: WeatherCoreDataRepository!
