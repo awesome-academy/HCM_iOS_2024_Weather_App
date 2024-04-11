@@ -58,6 +58,7 @@
 		ECE1424E2BAD2A02009B8B7A /* Weather.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE1424D2BAD2A02009B8B7A /* Weather.swift */; };
 		ECE142552BAD2EDC009B8B7A /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE142542BAD2EDC009B8B7A /* NetworkError.swift */; };
 		ECE142582BAD3122009B8B7A /* WeatherAPIRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE142572BAD3122009B8B7A /* WeatherAPIRepository.swift */; };
+		ECE2ED472BC7B92B007233CE /* LocalPushNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE2ED462BC7B92B007233CE /* LocalPushNotification.swift */; };
 		ECE9C9572BB1197600454D94 /* WeatherFavoriteCoreData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = ECE9C9552BB1197600454D94 /* WeatherFavoriteCoreData.xcdatamodeld */; };
 		ECE9C9592BB11F0100454D94 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE9C9582BB11F0100454D94 /* CoreDataManager.swift */; };
 		ECE9C95D2BB14D7900454D94 /* CoreDataError.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE9C95C2BB14D7900454D94 /* CoreDataError.swift */; };
@@ -147,6 +148,7 @@
 		ECE1424D2BAD2A02009B8B7A /* Weather.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Weather.swift; sourceTree = "<group>"; };
 		ECE142542BAD2EDC009B8B7A /* NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
 		ECE142572BAD3122009B8B7A /* WeatherAPIRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherAPIRepository.swift; sourceTree = "<group>"; };
+		ECE2ED462BC7B92B007233CE /* LocalPushNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalPushNotification.swift; sourceTree = "<group>"; };
 		ECE9C9562BB1197600454D94 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		ECE9C9582BB11F0100454D94 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		ECE9C95C2BB14D7900454D94 /* CoreDataError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataError.swift; sourceTree = "<group>"; };
@@ -316,6 +318,7 @@
 				EC55144A2BBE53AE001A668D /* wifiSlashImage.swift */,
 				EC20BB252BC51542004CAB8C /* StringtoDate.swift */,
 				EC10F3DF2BC549B600A8284D /* CoordinateStored.swift */,
+				ECE2ED462BC7B92B007233CE /* LocalPushNotification.swift */,
 			);
 			path = Ultilities;
 			sourceTree = "<group>";
@@ -664,6 +667,7 @@
 				ECEABF3A2BBBACB000A92523 /* ConvertDate.swift in Sources */,
 				EC6098A92BAAD80800E2C0B6 /* WeatherDetailViewController.swift in Sources */,
 				ECF5A9712BBCED3300F2951E /* WeatherForecastCoreDataManager.swift in Sources */,
+				ECE2ED472BC7B92B007233CE /* LocalPushNotification.swift in Sources */,
 				ECE142552BAD2EDC009B8B7A /* NetworkError.swift in Sources */,
 				ECE142442BAD28AC009B8B7A /* Wind.swift in Sources */,
 				EC6098752BAACD5400E2C0B6 /* SceneDelegate.swift in Sources */,
@@ -885,6 +889,7 @@
 				DEVELOPMENT_TEAM = KNQWN32P6C;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Weather_App/Info.plist;
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Allow access to your current location";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Allow access to your current location";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -915,6 +920,7 @@
 				DEVELOPMENT_TEAM = KNQWN32P6C;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Weather_App/Info.plist;
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Allow access to your current location";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Allow access to your current location";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
