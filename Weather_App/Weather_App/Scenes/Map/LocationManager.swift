@@ -60,4 +60,18 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         )
         mapView.setRegion(region, animated: true)
     }
+    
+    func requestBackgroundLocationAuthorization() {
+        locationManager.requestAlwaysAuthorization()
+    }
+    
+    func getLocationInBackground() -> CLLocation? {
+        guard CLLocationManager.locationServicesEnabled() else {
+            print("Location services are not enabled")
+            return nil
+        }
+        
+        locationManager.startMonitoringSignificantLocationChanges()
+        return locationManager.location
+    }
 }

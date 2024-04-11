@@ -15,4 +15,8 @@ struct Constants {
     
     static let favoritedStatus = "iconStarYellow"
     static let notFavotiteStatus = "iconStar"
+    
+    static let identifierLocalPushNotification = "notification"
+    static let hourOfNotification = 6
+    static let minuteOfNotification = 30
 }

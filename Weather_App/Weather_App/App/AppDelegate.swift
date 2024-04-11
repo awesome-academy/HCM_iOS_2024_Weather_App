@@ -12,10 +12,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     private let weatherCurrentCoreDataManager = WeatherCurrentCoreDataManager.shared
     private let weatherForecastCoreDataManager = WeatherForecastCoreDataManager.shared
+    private let localPushNotification = LocalPushNotification.shared
     private let networkMonitor = NetworkMonitor.shared
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         networkMonitor.startMonitoring()
+        localPushNotification.checkForPermissionNotification()
         return true
     }
     
