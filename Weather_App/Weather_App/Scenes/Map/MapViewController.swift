@@ -19,15 +19,14 @@ final class MapViewController: UIViewController {
     @IBOutlet weak var statusView: UIView!
     @IBOutlet weak var statusImageView: UIImageView!
     
-    private var searchController = UISearchController()
-    
+    var isFavorite = false
     private let weatherRepository: WeatherRepository = WeatherAPIRepository()
-    private var locationSearchController = LocationSearchController()
-    private var locationManager = LocationManager.shared
     private let weatherCurrentCoreDataManager = WeatherCurrentCoreDataManager.shared
     private let weatherForecastCoreDataManager = WeatherForecastCoreDataManager.shared
     private let coordinateStored = CoordinateStored.shared
-    private var isFavorite = false
+    private var locationSearchController = LocationSearchController()
+    private var locationManager = LocationManager.shared
+    private var searchController = UISearchController()
     private var isFirstLaunch = true
     private var nameCitySaved = ""
     
@@ -82,7 +81,7 @@ extension MapViewController: LocationSearchDelegate {
         getRegionMapOnUserLocation()
     }
     
-    private func getRegionMapOnUserLocation() {
+    func getRegionMapOnUserLocation() {
         guard let userLocation = locationManager.getCurrentLocation() else {
             locationManager.startUpdatingLocation()
             return
@@ -125,7 +124,7 @@ extension MapViewController: LocationSearchDelegate {
         }
     }
     
-    @IBAction private func getUserLocationButtonTapped(_ sender: Any) {
+    @IBAction func getUserLocationButtonTapped(_ sender: Any) {
         getRegionMapOnUserLocation()
     }
     
@@ -160,7 +159,7 @@ extension MapViewController: LocationSearchDelegate {
 // MARK: - Fetch API and Save data to Coredata
 
 extension MapViewController {
-    private func fetchCurrentWeather(latitude: Double, longitude: Double, completion: @escaping (WeatherCurrent) -> Void) {
+    func fetchCurrentWeather(latitude: Double, longitude: Double, completion: @escaping (WeatherCurrent) -> Void) {
         weatherRepository.getWeatherCurrent(latMapKit: latitude, lonMapKit: longitude) { result in
             switch result {
             case .success(let weatherCurrent):
@@ -190,7 +189,7 @@ extension MapViewController {
         }
     }
     
-    private func fetchForecastWeather(latitude: Double, longitude: Double, completion: @escaping (WeatherForecast) -> Void) {
+    func fetchForecastWeather(latitude: Double, longitude: Double, completion: @escaping (WeatherForecast) -> Void) {
         weatherRepository.getWeatherForecast(latMapKit: latitude, lonMapKit: longitude) { result in
             switch result {
             case .success(let weatherForecast):
@@ -217,7 +216,7 @@ extension MapViewController {
 // MARK: - Update status favorite CoreData and update status button favorite
 
 extension MapViewController {
-    @IBAction private func favoriteButtonTapped(_ sender: Any) {
+    @IBAction func favoriteButtonTapped(_ sender: Any) {
         isFavorite.toggle()
         updateFavoriteButtonImage()
         weatherCurrentCoreDataManager.updateSaveStatus(for: nameCitySaved, saveStatus: isFavorite)
@@ -255,7 +254,7 @@ extension MapViewController {
 // MARK: - Update data to UI
 
 extension MapViewController {
-    private func updateUIWithData(_ weatherEntity: WeatherEntity) {
+    func updateUIWithData(_ weatherEntity: WeatherEntity) {
         nameCityLabel.text = weatherEntity.nameCity
         temperatureLabel.text = weatherEntity.temperature
         if let icon = weatherEntity.statusIcon {
